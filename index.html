@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ad Card with Locked Button</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         body {
             margin: 0;
@@ -48,11 +49,13 @@
             transition: all 0.3s ease;
             width: 200px;
             font-size: 16px;
+            position: relative;
         }
 
         .unlock-button.unlocked {
             cursor: pointer;
             opacity: 1;
+            background: linear-gradient(45deg, #11998e, #38ef7d);
         }
 
         .lock-icon {
@@ -60,18 +63,98 @@
             right: 30px;
             top: 50%;
             transform: translateY(-50%);
-            font-size: 20px;
             color: white;
+            font-size: 18px;
+            transition: all 0.5s ease;
         }
 
         .lock-icon.hidden {
-            display: none;
+            opacity: 0;
+            transform: translateY(-50%) scale(0);
         }
 
         .message {
             color: white;
             margin-bottom: 15px;
             font-size: 14px;
+        }
+
+        /* Loading Animation */
+        .loading-ring {
+            display: none;
+            position: absolute;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+        }
+
+        .loading-ring.show {
+            display: block;
+        }
+
+        .loading-ring:before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Premium Lock Effects */
+        .lock-icon {
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        .lock-icon.unlocking {
+            animation: unlockAnimation 0.5s ease forwards;
+        }
+
+        @keyframes unlockAnimation {
+            0% { transform: translateY(-50%) rotate(0); }
+            100% { transform: translateY(-50%) rotate(360deg); }
+        }
+
+        /* Premium Button Effects */
+        .unlock-button {
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .unlock-button.unlocked:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+        }
+
+        .unlock-button::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #2575fc, #6a11cb);
+            z-index: -1;
+            border-radius: 26px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .unlock-button.unlocked::after {
+            background: linear-gradient(45deg, #11998e, #38ef7d);
+        }
+
+        .unlock-button:hover::after {
+            opacity: 0.3;
         }
     </style>
 </head>
@@ -81,49 +164,93 @@
         <div class="ad-container">
             <!-- Ad Script -->
             <script>
-(function(qgxn){
-var d = document,
-    s = d.createElement('script'),
-    l = d.scripts[d.scripts.length - 1];
-s.settings = qgxn || {};
-s.src = "\/\/sweltering-development.com\/bIXyVKs.djGgld0VYYWidjilY\/WI5FuqZdXEIM\/XeVmf9NutZVUgl\/kCP\/T\/U\/5aN_jxcY4zOcTTI-twNkTCkF2\/NyzBgW5SMmwG";
-s.async = true;
-s.referrerPolicy = 'no-referrer-when-downgrade';
-l.parentNode.insertBefore(s, l);
-})({})
-</script>
+                (function(xguzs){
+                var d = document,
+                    s = d.createElement('script'),
+                    l = d.scripts[d.scripts.length - 1];
+                s.settings = xguzs || {};
+                s.src = "//sweltering-development.com/bSX.V/sldwGjlh0tYdW/dfiRYFWN5ZuyZSXRI_/Ee/mn9VuFZ/U/lRkqPCTsUZ5MNvjCcS4/OzT/IVtyNaT/kU2_NKzrg/5xMwwe";
+                s.async = true;
+                s.referrerPolicy = 'no-referrer-when-downgrade';
+                l.parentNode.insertBefore(s, l);
+                })({})
+            </script>
         </div>
         <div class="button-container">
             <button class="unlock-button" id="unlockButton" disabled>Continue</button>
-            <span class="lock-icon" id="lockIcon">🔒</span>
+            <i class="fas fa-lock lock-icon" id="lockIcon"></i>
+            <div class="loading-ring" id="loadingRing"></div>
         </div>
     </div>
 
     <script>
-        let adClicked = false;
         const button = document.getElementById('unlockButton');
         const lockIcon = document.getElementById('lockIcon');
+        const loadingRing = document.getElementById('loadingRing');
         const adContainer = document.querySelector('.ad-container');
 
-        // Function to unlock the button
-        function unlockButton() {
-            adClicked = true;
-            button.classList.add('unlocked');
-            button.disabled = false;
-            lockIcon.classList.add('hidden');
+        // Check if the button was previously unlocked
+        const isUnlocked = sessionStorage.getItem('buttonUnlocked');
+        if (isUnlocked === 'true') {
+            unlockButton(false);
         }
+
+        // Function to unlock the button
+        function unlockButton(withAnimation = true) {
+            if (withAnimation) {
+                // Show loading animation
+                loadingRing.classList.add('show');
+                lockIcon.style.display = 'block';
+                
+                setTimeout(() => {
+                    // Start unlock animation
+                    lockIcon.classList.add('unlocking');
+                    
+                    setTimeout(() => {
+                        // Hide loading and change lock icon
+                        loadingRing.classList.remove('show');
+                        lockIcon.classList.remove('fa-lock');
+                        lockIcon.classList.add('fa-lock-open');
+                        
+                        setTimeout(() => {
+                            // Hide lock icon and enable button
+                            lockIcon.classList.add('hidden');
+                            button.classList.add('unlocked');
+                            button.disabled = false;
+                        }, 500);
+                    }, 1000);
+                }, 1500);
+            } else {
+                // Instant unlock without animation
+                lockIcon.classList.add('hidden');
+                button.classList.add('unlocked');
+                button.disabled = false;
+            }
+            sessionStorage.setItem('buttonUnlocked', 'true');
+        }
+
+        // Store the timestamp when leaving the page
+        let leaveTimestamp;
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'hidden') {
+                leaveTimestamp = new Date().getTime();
+            } else if (document.visibilityState === 'visible') {
+                // If returning after at least 2 seconds, unlock the button
+                const returnTimestamp = new Date().getTime();
+                if (leaveTimestamp && (returnTimestamp - leaveTimestamp) > 2000) {
+                    unlockButton(true);
+                }
+            }
+        });
 
         // Add click event listener to the ad container
         adContainer.addEventListener('click', () => {
-            // Set a timeout to simulate returning from the ad
-            setTimeout(() => {
-                unlockButton();
-            }, 1000);
+            leaveTimestamp = new Date().getTime();
         });
 
         // Add click event listener to the button
         button.addEventListener('click', () => {
-            if (adClicked) {
+            if (!button.disabled) {
                 window.location.href = "https://example.com"; // Replace with your desired URL
             }
         });
