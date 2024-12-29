@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ad Card with Locked Button</title>
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(45deg, #6a11cb, #2575fc);
+            font-family: Arial, sans-serif;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center;
+        }
+
+        .ad-container {
+            margin-bottom: 20px;
+            min-height: 250px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 10px;
+        }
+
+        .button-container {
+            position: relative;
+        }
+
+        .unlock-button {
+            background: linear-gradient(45deg, #2575fc, #6a11cb);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: not-allowed;
+            opacity: 0.7;
+            transition: all 0.3s ease;
+            width: 200px;
+            font-size: 16px;
+        }
+
+        .unlock-button.unlocked {
+            cursor: pointer;
+            opacity: 1;
+        }
+
+        .lock-icon {
+            position: absolute;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 20px;
+            color: white;
+        }
+
+        .lock-icon.hidden {
+            display: none;
+        }
+
+        .message {
+            color: white;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="glass-card">
+        <div class="message">Click the ad to unlock the button</div>
+        <div class="ad-container">
+            <!-- Ad Script -->
+            <script>
+(function(vmy){
+var d = document,
+    s = d.createElement('script'),
+    l = d.scripts[d.scripts.length - 1];
+s.settings = vmy || {};
+s.src = "\/\/sweltering-development.com\/b\/XjVGs.dwGsl\/0IYZWFd\/iKY\/W\/5buEZsXJIG\/fehmQ9guRZpUDlrkcPxTlU\/5HNBjec\/5oMVTWIft\/NjTFk\/2CNQzpk\/xjMhws";
+s.async = true;
+s.referrerPolicy = 'no-referrer-when-downgrade';
+l.parentNode.insertBefore(s, l);
+})({})
+</script>
+        </div>
+        <div class="button-container">
+            <button class="unlock-button" id="unlockButton" disabled>Continue</button>
+            <span class="lock-icon" id="lockIcon">🔒</span>
+        </div>
+    </div>
+
+    <script>
+        let adClicked = false;
+        const button = document.getElementById('unlockButton');
+        const lockIcon = document.getElementById('lockIcon');
+        const adContainer = document.querySelector('.ad-container');
+
+        // Function to unlock the button
+        function unlockButton() {
+            adClicked = true;
+            button.classList.add('unlocked');
+            button.disabled = false;
+            lockIcon.classList.add('hidden');
+        }
+
+        // Add click event listener to the ad container
+        adContainer.addEventListener('click', () => {
+            // Set a timeout to simulate returning from the ad
+            setTimeout(() => {
+                unlockButton();
+            }, 1000);
+        });
+
+        // Add click event listener to the button
+        button.addEventListener('click', () => {
+            if (adClicked) {
+                window.location.href = "https://example.com"; // Replace with your desired URL
+            }
+        });
+    </script>
+</body>
+</html>
